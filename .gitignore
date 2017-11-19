@@ -1,0 +1,3 @@
+node_modules
+# dist # kept for example on GH Pages
+coverage

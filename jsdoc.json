@@ -1,0 +1,20 @@
+{
+  "plugins": ["node_modules/jsdoc-escape-at"],
+  "recurseDepth": 10,
+  "source": {
+    "includePattern": "src/",
+    "excludePattern": "\\.test.js$"
+  },
+  "sourceType": "module",
+  "tags": {
+    "allowUnknownTags": false,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false,
+    "default": {
+      "includeDate": false
+    }
+  }
+}
