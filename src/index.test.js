@@ -2,6 +2,7 @@
 import Subject from './';
 
 describe('Subject', () => {
-  let subject;
-
+  it('can instantiate', () => {
+    const subject = new Subject(); // eslint-disable-line no-unused-vars
+  });
 });

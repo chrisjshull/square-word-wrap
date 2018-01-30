@@ -10,7 +10,7 @@
 /**
  * ________
  */
-export default class ________ {
+export default class Bootstrap {
 
 
 }
