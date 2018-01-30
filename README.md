@@ -1,9 +1,9 @@
-# ______
+# square-word-wrap
 
-______
+Word wrap that tries to find a 'square' of text.
 
 
-`npm install --save ______`
+`npm install --save square-word-wrap`
 
 
 
