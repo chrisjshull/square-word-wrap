@@ -9,7 +9,7 @@
     "build:babel": "babel ./src --out-dir dist --ignore '**/*.test.js'",
     "build:browser": "browserify -p browserify-prepend-licenses dist/index.js --standalone squareWordWrap -o dist/browser.js",
     "prepublishOnly": "npm run build",
-    "preversion": "npm run test && npm run build && git diff-index --ignore-space-at-eol --quiet HEAD --",
+    "preversion": "npm run test && npm run build && git diff-index --ignore-space-at-eol --quiet HEAD -- && u=`git ls-files --exclude-standard --others` && echo \"$u\" && test -z \"$u\"",
     "version": "npm run build && git add -A dist",
     "test": "npm run test:watch -- --single-run",
     "test:watch": "cross-env NODE_ENV=test karma start karma.conf.js",
