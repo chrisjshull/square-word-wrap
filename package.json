@@ -1,6 +1,6 @@
 {
   "name": "square-word-wrap",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Word wrap that tries to find a 'square' of text.",
   "main": "dist/",
   "scripts": {
