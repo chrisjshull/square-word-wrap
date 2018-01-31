@@ -1,44 +1,64 @@
 
-import {square} from './';
+import {wrap, square, unwrap} from './';
 
-describe('square', () => {
+function expectWrap(method, input, expected, unwrapped = input, args = []) {
+  const output = method(input, ...args);
+  expect(output).to.equal(expected);
+  expect(unwrap(output)).to.equal(unwrapped);
+}
+
+describe('wrap', () => {
   it('basics', () => {
-    expect(square('')).to.equal('');
-    expect(square('a')).to.equal('a');
-    expect(square('a b')).to.equal('a\nb');
-    expect(square('aa bb')).to.equal('aa\nbb');
-    expect(square('aaa bbb ccc')).to.equal('aaa\nbbb\nccc');
+    expectWrap(wrap, '', '');
+    expectWrap(wrap, 'a b', 'a\nb', undefined, [{width: 1}]);
+    expectWrap(wrap, 'a b', 'a\nb', undefined, [{width: 2}]);
+    expectWrap(wrap, 'a b c', 'a b\nc', undefined, [{width: 3}]);
   });
 
-  it('unbalenced', () => {
-    expect(square('aa')).to.equal('aa');
-    expect(square('a b c')).to.equal('a b\nc');
-    expect(square('aa bb cc')).to.equal('aa\nbb\ncc');
-
-    expect(square('a bb')).to.equal('a\nbb');
-    expect(square('a bb ccc')).to.equal('a\nbb\nccc');
-    expect(square('a bb ccc dddd')).to.equal('a bb\nccc\ndddd');
-  });
-
-  it('long word', () => {
-    expect(square('a b c ddddd')).to.equal('a b\nc\nddddd');
-  });
-
-  it('long word with longWordForcesRect', () => {
-    expect(square('a b c ddddd', {longWordForcesRect: true})).to.equal('a b c\nddddd');
+  it('word too long', () => {
+    expectWrap(wrap, 'a bbb c', 'a\nbbb\nc', undefined, [{width: 2}]);
   });
 
   it('collapses whitespace', () => {
-    expect(square(' a\nb  ccc\tddd')).to.equal('a b\nccc\nddd');
+    expectWrap(wrap, ' a\nb  ccc\tddd', 'a b\nccc\nddd', 'a b ccc ddd', [{width: 3}]);
+    expectWrap(wrap, ' \t\n\r', '', '');
   });
 
   it('respects nbsp', () => {
-    expect(square('aa bb\u00A0cc')).to.equal('aa\nbb\u00A0cc');
+    expectWrap(wrap, 'aa bb\u00A0cc', 'aa\nbb\u00A0cc', undefined, [{width: 2}]);
   });
 
   it('respects graphemes', () => {
     // just making sure dependency being used
     // JS natively thinks that '🏳️‍🌈'.length === 6
-    expect(square('🏳️‍🌈 a b c')).to.equal('🏳️‍🌈 a\nb c');
+    expectWrap(wrap, '🏳️‍🌈 a b c', '🏳️‍🌈 a\nb c', undefined, [{width: 3}]);
+  });
+});
+
+describe('square', () => {
+  it('basics', () => {
+    expectWrap(square, '', '');
+    expectWrap(square, 'a', 'a');
+    expectWrap(square, 'a b', 'a\nb');
+    expectWrap(square, 'aa bb', 'aa\nbb');
+    expectWrap(square, 'aaa bbb ccc', 'aaa\nbbb\nccc');
+  });
+
+  it('unbalenced', () => {
+    expectWrap(square, 'aa', 'aa');
+    expectWrap(square, 'a b c', 'a b\nc');
+    expectWrap(square, 'aa bb cc', 'aa\nbb\ncc');
+
+    expectWrap(square, 'a bb', 'a\nbb');
+    expectWrap(square, 'a bb ccc', 'a\nbb\nccc');
+    expectWrap(square, 'a bb ccc dddd', 'a bb\nccc\ndddd');
+  });
+
+  it('long word', () => {
+    expectWrap(square, 'a b c ddddd', 'a b\nc\nddddd');
+  });
+
+  it('long word with longWordForcesRect', () => {
+    expectWrap(square, 'a b c ddddd', 'a b c\nddddd', undefined, [{longWordForcesRect: true}]);
   });
 });

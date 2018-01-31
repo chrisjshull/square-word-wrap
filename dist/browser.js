@@ -10,7 +10,10 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.parseWords = parseWords;
+exports.wrap = wrap;
 exports.square = square;
+exports.unwrap = unwrap;
 
 var _graphemeSplitter = require('grapheme-splitter');
 
@@ -44,59 +47,90 @@ var DEBUG = false;
 /**
  * ________
  */
-function square(str) {
-  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
+function parseWords(str) {
   var chars = splitter.splitGraphemes(str);
   var words = [];
   var longestWordLength = 0;
   var charCount = 0;
-  {
-    var word = [];
-    for (var i = 0; i < chars.length; i++) {
-      var char = chars[i];
-      if (!isWhiteSpace(char)) {
-        charCount++;
-        word.push(char);
-        if (i < chars.length - 1) continue;
-      }
+  var word = [];
+  for (var i = 0; i < chars.length; i++) {
+    var char = chars[i];
+    if (!isWhiteSpace(char)) {
+      charCount++;
+      word.push(char);
+      if (i < chars.length - 1) continue;
+    }
 
-      if (word.length) {
-        longestWordLength = Math.max(longestWordLength, word.length);
-        words.push(word);
-        word = [];
-      }
+    if (word.length) {
+      longestWordLength = Math.max(longestWordLength, word.length);
+      words.push(word);
+      word = [];
     }
   }
   charCount += words.length - 1;
 
-  if (!words.length) return '';
+  return { words: words, charCount: charCount, longestWordLength: longestWordLength };
+}
+
+function wrapToTarget(words, target) {
+  var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+  var output = [];
+  var line = [];
+  for (var i = 0; i < words.length; i++) {
+    var word = words[i];
+    DEBUG && console.log({ word: word, line: line }, line.length + 1 + word.length);
+
+    if (line.length + 1 + word.length > target && line.length) {
+      output.push(line.join(''));
+      line.length = 0;
+    }
+
+    if (line.length) line.push(' ');
+    line.push.apply(line, _toConsumableArray(word));
+
+    if (i === words.length - 1) output.push(line.join(''));
+  }
+
+  DEBUG && console.log({ output: output });
+
+  return output.join(opts.lineDelimeter || '\n');
+}
+
+function wrap(str) {
+  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  var _parseWords = parseWords(str),
+      words = _parseWords.words;
+
+  return wrapToTarget(words, opts.width || 80, opts);
+}
+
+function square(str) {
+  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  var _parseWords2 = parseWords(str),
+      words = _parseWords2.words,
+      charCount = _parseWords2.charCount,
+      longestWordLength = _parseWords2.longestWordLength;
 
   var target = Math.max(opts.longWordForcesRect ? longestWordLength : 0, Math.ceil(Math.sqrt(charCount)) // chances are an extra line will be needed, so round up to columns
   );
 
   DEBUG && console.log({ str: str, target: target, charCount: charCount, longestWordLength: longestWordLength }, words);
 
-  var output = [];
-  var line = []; //words[0];
-  for (var _i = 0; _i < words.length; _i++) {
-    var _word = words[_i];
-    DEBUG && console.log({ word: _word, line: line }, line.length + 1 + _word.length);
+  return wrapToTarget(words, target, opts);
+}
 
-    if (line.length + 1 + _word.length > target && line.length) {
-      output.push(line.join(''));
-      line.length = 0;
-    }
+function unwrap(str) {
+  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    if (line.length) line.push(' ');
-    line.push.apply(line, _toConsumableArray(_word));
+  var _parseWords3 = parseWords(str),
+      words = _parseWords3.words;
 
-    if (_i === words.length - 1) output.push(line.join(''));
-  }
-
-  DEBUG && console.log({ output: output });
-
-  return output.join('\n');
+  return words.map(function (word) {
+    return word.join('');
+  }).join(' ');
 }
 },{"grapheme-splitter":2}],2:[function(require,module,exports){
 /*

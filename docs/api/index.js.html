@@ -51,41 +51,34 @@ const DEBUG = false;
 /**
  * ________
  */
-export function square(str, opts = {}) {
+export function parseWords(str) {
   const chars = splitter.splitGraphemes(str);
   const words = [];
   let longestWordLength = 0;
   let charCount = 0;
-  {
-    let word = [];
-    for (let i = 0; i &lt; chars.length; i++) {
-      const char = chars[i];
-      if (!isWhiteSpace(char)) {
-        charCount++;
-        word.push(char);
-        if (i &lt; chars.length - 1) continue;
-      }
+  let word = [];
+  for (let i = 0; i &lt; chars.length; i++) {
+    const char = chars[i];
+    if (!isWhiteSpace(char)) {
+      charCount++;
+      word.push(char);
+      if (i &lt; chars.length - 1) continue;
+    }
 
-      if (word.length) {
-        longestWordLength = Math.max(longestWordLength, word.length);
-        words.push(word);
-        word = [];
-      }
+    if (word.length) {
+      longestWordLength = Math.max(longestWordLength, word.length);
+      words.push(word);
+      word = [];
     }
   }
   charCount += words.length - 1;
 
-  if (!words.length) return '';
+  return {words, charCount, longestWordLength};
+}
 
-  const target = Math.max(
-    opts.longWordForcesRect ? longestWordLength : 0,
-    Math.ceil(Math.sqrt(charCount)) // chances are an extra line will be needed, so round up to columns
-  );
-
-  DEBUG &amp;&amp; console.log({str, target, charCount, longestWordLength}, words);
-
+function wrapToTarget(words, target, opts = {}) {
   const output = [];
-  const line = []; //words[0];
+  const line = [];
   for (let i = 0; i &lt; words.length; i++) {
     const word = words[i];
     DEBUG &amp;&amp; console.log({word, line}, line.length + 1 + word.length);
@@ -103,7 +96,31 @@ export function square(str, opts = {}) {
 
   DEBUG &amp;&amp; console.log({output});
 
-  return output.join('\n');
+  return output.join(opts.lineDelimeter || '\n');
+}
+
+export function wrap(str, opts = {}) {
+  const {words} = parseWords(str);
+  return wrapToTarget(words, opts.width || 80, opts);
+}
+
+export function square(str, opts = {}) {
+  const {words, charCount, longestWordLength} = parseWords(str);
+
+  const target = Math.max(
+    opts.longWordForcesRect ? longestWordLength : 0,
+    Math.ceil(Math.sqrt(charCount)) // chances are an extra line will be needed, so round up to columns
+  );
+
+  DEBUG &amp;&amp; console.log({str, target, charCount, longestWordLength}, words);
+
+  return wrapToTarget(words, target, opts);
+}
+
+export function unwrap(str, opts = {}) {
+  const {words} = parseWords(str);
+
+  return words.map(word => word.join('')).join(' ');
 }
 </code></pre>
         </article>
