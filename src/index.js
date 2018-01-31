@@ -23,7 +23,7 @@ const DEBUG = false;
 /**
  * ________
  */
-export default function squareWordWrap(str, opts = {}) {
+export function square(str, opts = {}) {
   const chars = splitter.splitGraphemes(str);
   const words = [];
   let longestWordLength = 0;
