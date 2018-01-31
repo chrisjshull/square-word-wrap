@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = squareWordWrap;
+exports.square = square;
 
 var _graphemeSplitter = require('grapheme-splitter');
 
@@ -37,7 +37,7 @@ var DEBUG = false;
 /**
  * ________
  */
-function squareWordWrap(str) {
+function square(str) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   var chars = splitter.splitGraphemes(str);
