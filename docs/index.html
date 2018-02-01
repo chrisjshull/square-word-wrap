@@ -6,15 +6,62 @@
   <script defer src="../dist/browser.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      //
+      var input = document.getElementById('input');
+      input.addEventListener('input', changed);
+      var width = document.getElementById('width');
+      width.addEventListener('input', changed);
+
+      changed();
+
+      function changed() {
+        var wrapped = WrapWords.wrap(input.value, {width: width.value});
+        var squared = WrapWords.square(input.value);
+
+        document.getElementById('wrapped').textContent = wrapped;
+        document.getElementById('square').textContent = squared;
+
+        stats(wrapped, 'wrap-stats');
+        stats(squared, 'square-stats');
+      }
+
+      function stats(txt, id) {
+        var lines = txt.split('\n');
+        var h = lines.length;
+        var w = lines.reduce((max, line) => Math.max(max, line.length), 0);
+
+        document.getElementById(id).textContent = w + ' × ' + h;
+      }
     });
   </script>
+
+  <style>
+    textarea {
+      display: block;
+      width: 100%;
+      max-width: 50em;
+      height: 10em;
+    }
+  </style>
 </head>
 <body>
 
 <h1>wrap-words – Live Example</h1>
 
-<!---->
+Width: <input id="width" type="number" value="80">
+<textarea id="input">
+  It is of great use to the sailor to know the length of his line, though he cannot with it fathom all the depths of the ocean. It is well he knows that it is long enough to reach the bottom at such places as are necessary to direct his voyage, and caution him against running upon shoals that may ruin him. Our business here is not to know all things, but those which concern our conduct. If we can find out those measures whereby a rational creature, put in that state in which man is in this world, may; and ought to govern his opinions, and actions depending thereon, we need not to be troubled that some other things escape our knowledge. ~ John Locke
+</textarea>
+
+<h2>Wrapped:</h2>
+<pre id="wrapped"></pre>
+<span id="wrap-stats"></span>
+
+<h2>Square:</h2>
+<pre id="square"></pre>
+<span id="square-stats"></span>
+
+<br>
+<br>
 
 <div>
   <a href="./api/">API Docs</a>

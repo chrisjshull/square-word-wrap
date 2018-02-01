@@ -79,10 +79,12 @@ export function wrap(str, opts = {}) {
 export function square(str, opts = {}) {
   const {words, charCount, longestWordLength} = parseWords(str);
 
-  const target = Math.max(
+  let target = Math.max(
     opts.longWordForcesRect ? longestWordLength : 0,
     Math.ceil(Math.sqrt(charCount)) // chances are an extra line will be needed, so round up to columns
   );
+
+  target *= opts.widthMultiplier || 2;
 
   DEBUG && console.log({str, target, charCount, longestWordLength}, words);
 

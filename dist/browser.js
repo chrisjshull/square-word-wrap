@@ -117,6 +117,8 @@ function square(str) {
   var target = Math.max(opts.longWordForcesRect ? longestWordLength : 0, Math.ceil(Math.sqrt(charCount)) // chances are an extra line will be needed, so round up to columns
   );
 
+  target *= opts.widthMultiplier || 2;
+
   DEBUG && console.log({ str: str, target: target, charCount: charCount, longestWordLength: longestWordLength }, words);
 
   return wrapToTarget(words, target, opts);
