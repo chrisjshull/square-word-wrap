@@ -4,7 +4,7 @@ import {wrap, square, unwrap} from './';
 function expectWrap(method, input, expected, args = [], unwrapped = input) {
   const output = method(input, ...args);
   expect(output).to.equal(expected);
-  expect(unwrap(output)).to.equal(unwrapped);
+  expect(unwrap(output), 'unwrap').to.equal(unwrapped);
 }
 
 describe('wrap', () => {
@@ -32,6 +32,19 @@ describe('wrap', () => {
     // just making sure dependency being used
     // JS natively thinks that '🏳️‍🌈'.length === 6
     expectWrap(wrap, '🏳️‍🌈 a b c', '🏳️‍🌈 a\nb c', [{width: 3}]);
+  });
+
+  it('respects ANSI escape codes', () => {
+    expectWrap(wrap, '\u001B[4m', '\u001B[4m', [{width: 1}]);
+    expectWrap(wrap, '\u001B[4mcake\u001B[0m yeah', '\u001B[4mcake\u001B[0m yeah', [{width: 9}]);
+    expectWrap(wrap, 'yeah \u001B[4mcake\u001B[0m', 'yeah \u001B[4mcake\u001B[0m', [{width: 9}]);
+    expectWrap(wrap, ' \u001B[4m cake \u001B[0m yeah', '\u001B[4m cake \u001B[0m yeah', [{width: 13}], '\u001B[4m cake \u001B[0m yeah');
+    expectWrap(wrap, 'yeah \u001B[4mcake\u001B[0m ', 'yeah \u001B[4mcake\u001B[0m', [{width: 9}], 'yeah \u001B[4mcake\u001B[0m');
+
+    expectWrap(wrap, '\u001B[4m\u001B[4mcake\u001B[0m\u001B[0m yeah', '\u001B[4m\u001B[4mcake\u001B[0m\u001B[0m yeah', [{width: 9}]);
+    expectWrap(wrap, 'yeah \u001B[4m\u001B[4mcake\u001B[0m\u001B[0m', 'yeah \u001B[4m\u001B[4mcake\u001B[0m\u001B[0m', [{width: 9}], 'yeah \u001B[4m\u001B[4mcake\u001B[0m\u001B[0m', );
+    expectWrap(wrap, ' \u001B[4m\u001B[4m cake \u001B[0m\u001B[0m yeah', '\u001B[4m\u001B[4m cake \u001B[0m\u001B[0m yeah', [{width: 13}], '\u001B[4m\u001B[4m cake \u001B[0m\u001B[0m yeah');
+    expectWrap(wrap, 'yeah \u001B[4m\u001B[4mcake\u001B[0m\u001B[0m ', 'yeah \u001B[4m\u001B[4mcake\u001B[0m\u001B[0m', [{width: 9}], 'yeah \u001B[4m\u001B[4mcake\u001B[0m\u001B[0m');
   });
 });
 

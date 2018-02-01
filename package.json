@@ -49,6 +49,7 @@
     "webpack": "^3.5.5"
   },
   "dependencies": {
+    "ansi-regex": "^3.0.0",
     "grapheme-splitter": "^1.0.2"
   }
 }

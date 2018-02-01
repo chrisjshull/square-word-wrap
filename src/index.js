@@ -13,10 +13,9 @@
 // future: support preserving existing whitespace chars without forcing them to be spaces inc. what to do with leading and repeating whitespace
 
 import GraphemeSplitter from 'grapheme-splitter';
+import ansiRegex from 'ansi-regex';
 
 const splitter = new GraphemeSplitter();
-
-const isWhiteSpace = (char) => /^[\t\n\r ]$/.test(char); // collapsible whitespace, like HTML/CSS
 
 const DEBUG = false;
 
@@ -24,25 +23,54 @@ const DEBUG = false;
  * ________
  */
 export function parseWords(str) {
-  const chars = splitter.splitGraphemes(str);
-  const words = [];
   let longestWordLength = 0;
   let charCount = 0;
-  let word = [];
-  for (let i = 0; i < chars.length; i++) {
-    const char = chars[i];
-    if (!isWhiteSpace(char)) {
-      charCount++;
-      word.push(char);
-      if (i < chars.length - 1) continue;
+  const words = str.split(/[\t\n\r ]+/).map(wordTxt => { // collapsible whitespace, like HTML/CSS
+    const word = [];
+
+    const re = ansiRegex();
+    let lastIndex = re.lastIndex;
+    let leftANSI = '';
+
+    const appendNonANSI = (endIndex = undefined) => {
+      const prevTxt = wordTxt.substring(lastIndex, endIndex);
+      if (prevTxt) {
+        const graphemes = splitter.splitGraphemes(prevTxt);
+        if (leftANSI) {
+          graphemes[0] = leftANSI + graphemes[0];
+          leftANSI = '';
+        }
+        word.push(...graphemes);
+      }
+    };
+
+    let match;
+    while ((match = re.exec(wordTxt)) !== null) {
+      appendNonANSI(match.index);
+
+      const ansi = match[0];
+
+      if (word.length) {
+        // try to "hide" ansi escapes inside of previous grapheme chars
+        word[word.length - 1] += ansi;
+      } else {
+        leftANSI += ansi;
+      }
+
+      lastIndex = re.lastIndex;
     }
 
-    if (word.length) {
-      longestWordLength = Math.max(longestWordLength, word.length);
-      words.push(word);
-      word = [];
+    appendNonANSI();
+    if (leftANSI) {
+      word.push(leftANSI);
     }
-  }
+
+    return word;
+  }).filter(word => {
+    charCount += word.length;
+    longestWordLength = Math.max(longestWordLength, word.length);
+    return word.length;
+  });
   charCount += words.length - 1;
 
   return {words, charCount, longestWordLength};
