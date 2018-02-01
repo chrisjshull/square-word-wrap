@@ -51,5 +51,6 @@
   "dependencies": {
     "ansi-regex": "^3.0.0",
     "grapheme-splitter": "^1.0.2"
-  }
+  },
+  "runkitExample": "var WrapWords = require(\"wrap-words\");\nconsole.log(WrapWords.wrap(\"aaa bbb ccc\", {width: 10}));\nconsole.log(WrapWords.square(\"aaa bbb ccc\", {widthMultiplier: 1}));"
 }

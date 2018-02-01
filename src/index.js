@@ -22,7 +22,7 @@ const DEBUG = false;
 /**
  * ________
  */
-export function parseWords(str) {
+function parseWords(str) {
   let longestWordLength = 0;
   let charCount = 0;
   const words = str.split(/[\t\n\r ]+/).map(wordTxt => { // collapsible whitespace, like HTML/CSS
