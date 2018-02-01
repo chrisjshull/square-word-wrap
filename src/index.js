@@ -82,6 +82,8 @@ function wrapToTarget(words, target, opts = {}) {
   const line = [];
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
+
+    /* istanbul ignore next */
     DEBUG && console.log({word, line, target}, line.length + 1 + word.length);
 
     if (line.length + 1 + word.length > target && line.length) {
@@ -95,14 +97,15 @@ function wrapToTarget(words, target, opts = {}) {
     if (i === words.length - 1) output.push(line.join(''));
   }
 
+  /* istanbul ignore next */
   DEBUG && console.log({output});
 
   return output.join(opts.lineDelimeter || '\n');
 }
 
-export function wrap(str, opts = {}) {
+export function wrap(str, opts) {
   const {words} = parseWords(str);
-  return wrapToTarget(words, opts.width || 80, opts);
+  return wrapToTarget(words, (opts && opts.width) || 80, opts);
 }
 
 export function square(str, opts = {}) {
@@ -115,6 +118,7 @@ export function square(str, opts = {}) {
 
   target *= opts.widthMultiplier || 2;
 
+  /* istanbul ignore next */
   DEBUG && console.log({str, target, charCount, longestWordLength}, words);
 
   return wrapToTarget(words, target, opts);

@@ -78,6 +78,7 @@ describe('square', () => {
   it('widthMultiplier', () => {
     expectWrap(square, 'aa bb c d', 'aa\nbb\nc d', [{widthMultiplier: 1}]);
     expectWrap(square, 'aa bb c d', 'aa bb\nc d', [{widthMultiplier: 2}]);
+    expectWrap(square, 'aa bb c d', 'aa bb\nc d');
     expectWrap(square, 'aa bb c d', 'aa bb c d', [{widthMultiplier: 3}]);
   });
 });
