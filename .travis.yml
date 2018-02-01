@@ -7,4 +7,4 @@ install:
 
 script:
   - npm test
-  - codecov
+  - codecov coverage/lcov.info
