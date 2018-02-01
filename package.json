@@ -1,13 +1,13 @@
 {
-  "name": "______",
+  "name": "__PROJECT_NAME__",
   "version": "0.0.1",
-  "description": "______",
+  "description": "__PROJECT_DESC__",
   "main": "dist/",
   "scripts": {
     "build": "npm run build:docs && npm run build:babel && npm run build:browser",
     "build:docs": "grep -v 'docs/api/' ./README.md | sed 's/[(]docs\\//(..\\//' > /tmp/readme && jsdoc --verbose -d docs/api -c jsdoc.json -R /tmp/readme -r ./src",
     "build:babel": "babel ./src --out-dir dist --ignore '**/*.test.js'",
-    "build:browser": "browserify -p browserify-prepend-licenses dist/index.js --standalone ______ -o dist/browser.js",
+    "build:browser": "browserify -p browserify-prepend-licenses dist/index.js --standalone __PROJECT_NS__ -o dist/browser.js",
     "prepublishOnly": "npm run build",
     "preversion": "npm run test && npm run build && git diff-index --ignore-space-at-eol --quiet HEAD -- && u=`git ls-files --exclude-standard --others` && echo \"$u\" && test -z \"$u\"",
     "version": "npm run build && git add -A dist",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "____"
+    "url": "__PROJECT_GIT_URL__"
   },
   "author": "chrisjshull@gmail.com",
   "license": "MIT",
