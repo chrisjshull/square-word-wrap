@@ -10,8 +10,9 @@ Word wrap.
 [![GitHub issues](https://img.shields.io/github/issues/__PROJECT_GH_USER__/__PROJECT_NAME__.svg)](__PROJECT_GH_URL__)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/__PROJECT_GH_USER__/__PROJECT_NAME__.svg)](__PROJECT_GH_URL__)
 
+[![Codecov](https://img.shields.io/codecov/c/github/__PROJECT_GH_USER__/__PROJECT_NAME__.svg)](https://codecov.io/gh/__PROJECT_GH_USER__/__PROJECT_NAME__)
 [![Coveralls](https://img.shields.io/coveralls/github/__PROJECT_GH_USER__/__PROJECT_NAME__.svg)](__PROJECT_GH_URL__)
-[![Travis](https://img.shields.io/travis/__PROJECT_GH_USER__/__PROJECT_NAME__.svg)](__PROJECT_GH_URL__)
+[![Travis](https://img.shields.io/travis/__PROJECT_TRAVIS_USER__/__PROJECT_NAME__.svg)](__PROJECT_GH_URL__)
 
 ... http://shields.io
 -->
