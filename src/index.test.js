@@ -7,6 +7,9 @@ function expectWrap(method, input, expected, args = [], unwrapped = input) {
   expect(unwrap(output), 'unwrap').to.equal(unwrapped);
 }
 
+new Object();
+
+
 describe('wrap', () => {
   it('basics', () => {
     expectWrap(wrap, '', '');

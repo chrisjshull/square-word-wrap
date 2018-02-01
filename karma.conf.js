@@ -16,6 +16,8 @@
 
 const webpack = require('webpack');
 
+new Object();
+
 module.exports = function(config) {
   config.set({
 
@@ -75,6 +77,12 @@ module.exports = function(config) {
     webpack: {
       module: {
         rules: [
+          // {
+          //   enforce: 'pre',
+          //   test: /\.js$/,
+          //   exclude: /node_modules/,
+          //   loader: 'eslint-loader'
+          // },
           {
             test: /\.js$/,
             exclude: /(node_modules|bower_components)/,
@@ -104,7 +112,7 @@ module.exports = function(config) {
     },
 
     eslint: {
-      //stopOnError: false
+      stopOnError: false
     }
   });
 };
