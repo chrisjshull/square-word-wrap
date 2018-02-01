@@ -105,7 +105,7 @@ function wrapToTarget(words, target, opts = {}) {
 
 export function wrap(str, opts) {
   const {words} = parseWords(str);
-  return wrapToTarget(words, (opts && opts.width) || 80, opts);
+  return wrapToTarget(words, opts && opts.width || 80, opts);
 }
 
 export function square(str, opts = {}) {

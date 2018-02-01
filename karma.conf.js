@@ -104,7 +104,7 @@ module.exports = function(config) {
     },
 
     eslint: {
-      stopOnError: false
+      //stopOnError: false
     }
   });
 };
