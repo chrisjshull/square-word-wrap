@@ -1,9 +1,9 @@
 /**
- * Base module for ________.
+ * Base module for __PROJECT_NAME__.
  * ________________________________.
  * @module index
  * @example
- * import ________ from '________';
+ * import ________ from '__PROJECT_NAME__';
  * ________
  */
 
