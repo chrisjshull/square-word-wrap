@@ -51,9 +51,10 @@ export function parseWords(str) {
       const ansi = match[0];
 
       if (word.length) {
-        // try to "hide" ansi escapes inside of previous grapheme chars
+        // try to "hide" ansi escapes inside of previous grapheme char
         word[word.length - 1] += ansi;
       } else {
+        // or hold ANSI to try to "hide" in next grapheme char
         leftANSI += ansi;
       }
 
@@ -81,7 +82,7 @@ function wrapToTarget(words, target, opts = {}) {
   const line = [];
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
-    DEBUG && console.log({word, line}, line.length + 1 + word.length);
+    DEBUG && console.log({word, line, target}, line.length + 1 + word.length);
 
     if (line.length + 1 + word.length > target && line.length) {
       output.push(line.join(''));
