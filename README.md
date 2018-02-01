@@ -6,13 +6,13 @@
 [![Node.js](https://img.shields.io/node/v/__PROJECT_NAME__.svg)](https://www.npmjs.org/package/__PROJECT_NAME__)
 -->
 
-[![License](https://img.shields.io/npm/l/wrap-words.svg)](https://github.com/chrisjshull/wrap-words)
-[![Version](https://img.shields.io/npm/v/wrap-words.svg)](https://www.npmjs.org/package/wrap-words)
 [![Travis](https://img.shields.io/travis/chrisjshull/wrap-words.svg)](https://travis-ci.org/chrisjshull/wrap-words)
 [![Codecov](https://img.shields.io/codecov/c/github/chrisjshull/wrap-words.svg)](https://codecov.io/gh/chrisjshull/wrap-words)
 [![GitHub issues](https://img.shields.io/github/issues/chrisjshull/wrap-words.svg)](https://github.com/chrisjshull/wrap-words/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/chrisjshull/wrap-words.svg)](https://github.com/chrisjshull/wrap-words/pulls)
-[![Try wrap-words on RunKit](https://badge.runkitcdn.com/wrap-words.svg)](https://npm.runkit.com/wrap-words)
+[![MIT License](https://img.shields.io/npm/l/wrap-words.svg)](https://github.com/chrisjshull/wrap-words)
+[![Version](https://img.shields.io/npm/v/wrap-words.svg?label=version)](https://www.npmjs.org/package/wrap-words)
+[![Try on RunKit](https://badge.runkitcdn.com/wrap-words.svg)](https://npm.runkit.com/wrap-words)
 
 
 Word wrap.
