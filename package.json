@@ -13,7 +13,8 @@
     "version": "npm run build && git add -A dist",
     "test": "npm run test:watch -- --single-run",
     "test:watch": "cross-env NODE_ENV=test karma start karma.conf.js",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "report-coverage": "codecov ./coverage/lcov.info"
   },
   "repository": {
     "type": "git",
