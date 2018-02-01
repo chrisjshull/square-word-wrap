@@ -1,6 +1,6 @@
 {
   "name": "wrap-words",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Word wrap.",
   "main": "dist/",
   "scripts": {
