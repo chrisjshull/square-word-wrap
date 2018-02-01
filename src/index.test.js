@@ -1,7 +1,7 @@
 
 import {wrap, square, unwrap} from './';
 
-function expectWrap(method, input, expected, unwrapped = input, args = []) {
+function expectWrap(method, input, expected, args = [], unwrapped = input) {
   const output = method(input, ...args);
   expect(output).to.equal(expected);
   expect(unwrap(output)).to.equal(unwrapped);
@@ -10,55 +10,61 @@ function expectWrap(method, input, expected, unwrapped = input, args = []) {
 describe('wrap', () => {
   it('basics', () => {
     expectWrap(wrap, '', '');
-    expectWrap(wrap, 'a b', 'a\nb', undefined, [{width: 1}]);
-    expectWrap(wrap, 'a b', 'a\nb', undefined, [{width: 2}]);
-    expectWrap(wrap, 'a b c', 'a b\nc', undefined, [{width: 3}]);
+    expectWrap(wrap, 'a b', 'a\nb', [{width: 1}]);
+    expectWrap(wrap, 'a b', 'a\nb', [{width: 2}]);
+    expectWrap(wrap, 'a b c', 'a b\nc', [{width: 3}]);
   });
 
   it('word too long', () => {
-    expectWrap(wrap, 'a bbb c', 'a\nbbb\nc', undefined, [{width: 2}]);
+    expectWrap(wrap, 'a bbb c', 'a\nbbb\nc', [{width: 2}]);
   });
 
   it('collapses whitespace', () => {
-    expectWrap(wrap, ' a\nb  ccc\tddd', 'a b\nccc\nddd', 'a b ccc ddd', [{width: 3}]);
-    expectWrap(wrap, ' \t\n\r', '', '');
+    expectWrap(wrap, ' a\nb  ccc\tddd', 'a b\nccc\nddd', [{width: 3}], 'a b ccc ddd');
+    expectWrap(wrap, ' \t\n\r', '', [], '');
   });
 
   it('respects nbsp', () => {
-    expectWrap(wrap, 'aa bb\u00A0cc', 'aa\nbb\u00A0cc', undefined, [{width: 2}]);
+    expectWrap(wrap, 'aa bb\u00A0cc', 'aa\nbb\u00A0cc', [{width: 2}]);
   });
 
   it('respects graphemes', () => {
     // just making sure dependency being used
     // JS natively thinks that '🏳️‍🌈'.length === 6
-    expectWrap(wrap, '🏳️‍🌈 a b c', '🏳️‍🌈 a\nb c', undefined, [{width: 3}]);
+    expectWrap(wrap, '🏳️‍🌈 a b c', '🏳️‍🌈 a\nb c', [{width: 3}]);
   });
 });
 
 describe('square', () => {
   it('basics', () => {
-    expectWrap(square, '', '');
-    expectWrap(square, 'a', 'a');
-    expectWrap(square, 'a b', 'a\nb');
-    expectWrap(square, 'aa bb', 'aa\nbb');
-    expectWrap(square, 'aaa bbb ccc', 'aaa\nbbb\nccc');
+    expectWrap(square, '', '', [{widthMultiplier: 1}]);
+    expectWrap(square, 'a', 'a', [{widthMultiplier: 1}]);
+    expectWrap(square, 'a b', 'a\nb', [{widthMultiplier: 1}]);
+    expectWrap(square, 'aa bb', 'aa\nbb', [{widthMultiplier: 1}]);
+    expectWrap(square, 'aaa bbb ccc', 'aaa\nbbb\nccc', [{widthMultiplier: 1}]);
   });
 
   it('unbalenced', () => {
-    expectWrap(square, 'aa', 'aa');
-    expectWrap(square, 'a b c', 'a b\nc');
-    expectWrap(square, 'aa bb cc', 'aa\nbb\ncc');
+    expectWrap(square, 'aa', 'aa', [{widthMultiplier: 1}]);
+    expectWrap(square, 'a b c', 'a b\nc', [{widthMultiplier: 1}]);
+    expectWrap(square, 'aa bb cc', 'aa\nbb\ncc', [{widthMultiplier: 1}]);
 
-    expectWrap(square, 'a bb', 'a\nbb');
-    expectWrap(square, 'a bb ccc', 'a\nbb\nccc');
-    expectWrap(square, 'a bb ccc dddd', 'a bb\nccc\ndddd');
+    expectWrap(square, 'a bb', 'a\nbb', [{widthMultiplier: 1}]);
+    expectWrap(square, 'a bb ccc', 'a\nbb\nccc', [{widthMultiplier: 1}]);
+    expectWrap(square, 'a bb ccc dddd', 'a bb\nccc\ndddd', [{widthMultiplier: 1}]);
   });
 
   it('long word', () => {
-    expectWrap(square, 'a b c ddddd', 'a b\nc\nddddd');
+    expectWrap(square, 'a b c ddddd', 'a b\nc\nddddd', [{widthMultiplier: 1}]);
   });
 
   it('long word with longWordForcesRect', () => {
-    expectWrap(square, 'a b c ddddd', 'a b c\nddddd', undefined, [{longWordForcesRect: true}]);
+    expectWrap(square, 'a b c ddddd', 'a b c\nddddd', [{longWordForcesRect: true, widthMultiplier: 1}]);
+  });
+
+  it('widthMultiplier', () => {
+    expectWrap(square, 'aa bb c d', 'aa\nbb\nc d', [{widthMultiplier: 1}]);
+    expectWrap(square, 'aa bb c d', 'aa bb\nc d', [{widthMultiplier: 2}]);
+    expectWrap(square, 'aa bb c d', 'aa bb c d', [{widthMultiplier: 3}]);
   });
 });
