@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.parseWords = parseWords;
 exports.wrap = wrap;
 exports.square = square;
 exports.unwrap = unwrap;
@@ -12,14 +11,18 @@ var _graphemeSplitter = require('grapheme-splitter');
 
 var _graphemeSplitter2 = _interopRequireDefault(_graphemeSplitter);
 
+var _ansiRegex = require('ansi-regex');
+
+var _ansiRegex2 = _interopRequireDefault(_ansiRegex);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /**
-                                                                                                                                                                                                     * Base module for ________.
+                                                                                                                                                                                                     * Base module for __PROJECT_NAME__.
                                                                                                                                                                                                      * ________________________________.
                                                                                                                                                                                                      * @module index
                                                                                                                                                                                                      * @example
-                                                                                                                                                                                                     * import ________ from '________';
+                                                                                                                                                                                                     * import ________ from '__PROJECT_NAME__';
                                                                                                                                                                                                      * ________
                                                                                                                                                                                                      */
 
@@ -30,36 +33,64 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var splitter = new _graphemeSplitter2.default();
 
-var isWhiteSpace = function isWhiteSpace(char) {
-  return (/^[\t\n\r ]$/.test(char)
-  );
-}; // collapsible whitespace, like HTML/CSS
-
 var DEBUG = false;
 
 /**
  * ________
  */
 function parseWords(str) {
-  var chars = splitter.splitGraphemes(str);
-  var words = [];
   var longestWordLength = 0;
   var charCount = 0;
-  var word = [];
-  for (var i = 0; i < chars.length; i++) {
-    var char = chars[i];
-    if (!isWhiteSpace(char)) {
-      charCount++;
-      word.push(char);
-      if (i < chars.length - 1) continue;
+  var words = str.split(/[\t\n\r ]+/).map(function (wordTxt) {
+    // collapsible whitespace, like HTML/CSS
+    var word = [];
+
+    var re = (0, _ansiRegex2.default)();
+    var lastIndex = re.lastIndex;
+    var leftANSI = '';
+
+    var appendNonANSI = function appendNonANSI() {
+      var endIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+
+      var prevTxt = wordTxt.substring(lastIndex, endIndex);
+      if (prevTxt) {
+        var graphemes = splitter.splitGraphemes(prevTxt);
+        if (leftANSI) {
+          graphemes[0] = leftANSI + graphemes[0];
+          leftANSI = '';
+        }
+        word.push.apply(word, _toConsumableArray(graphemes));
+      }
+    };
+
+    var match = void 0;
+    while ((match = re.exec(wordTxt)) !== null) {
+      appendNonANSI(match.index);
+
+      var ansi = match[0];
+
+      if (word.length) {
+        // try to "hide" ansi escapes inside of previous grapheme char
+        word[word.length - 1] += ansi;
+      } else {
+        // or hold ANSI to try to "hide" in next grapheme char
+        leftANSI += ansi;
+      }
+
+      lastIndex = re.lastIndex;
     }
 
-    if (word.length) {
-      longestWordLength = Math.max(longestWordLength, word.length);
-      words.push(word);
-      word = [];
+    appendNonANSI();
+    if (leftANSI) {
+      word.push(leftANSI);
     }
-  }
+
+    return word;
+  }).filter(function (word) {
+    charCount += word.length;
+    longestWordLength = Math.max(longestWordLength, word.length);
+    return word.length;
+  });
   charCount += words.length - 1;
 
   return { words: words, charCount: charCount, longestWordLength: longestWordLength };
@@ -72,7 +103,9 @@ function wrapToTarget(words, target) {
   var line = [];
   for (var i = 0; i < words.length; i++) {
     var word = words[i];
-    DEBUG && console.log({ word: word, line: line }, line.length + 1 + word.length);
+
+    /* istanbul ignore next */
+    DEBUG && console.log({ word: word, line: line, target: target }, line.length + 1 + word.length);
 
     if (line.length + 1 + word.length > target && line.length) {
       output.push(line.join(''));
@@ -85,18 +118,17 @@ function wrapToTarget(words, target) {
     if (i === words.length - 1) output.push(line.join(''));
   }
 
+  /* istanbul ignore next */
   DEBUG && console.log({ output: output });
 
   return output.join(opts.lineDelimeter || '\n');
 }
 
-function wrap(str) {
-  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
+function wrap(str, opts) {
   var _parseWords = parseWords(str),
       words = _parseWords.words;
 
-  return wrapToTarget(words, opts.width || 80, opts);
+  return wrapToTarget(words, opts && opts.width || 80, opts);
 }
 
 function square(str) {
@@ -112,6 +144,7 @@ function square(str) {
 
   target *= opts.widthMultiplier || 2;
 
+  /* istanbul ignore next */
   DEBUG && console.log({ str: str, target: target, charCount: charCount, longestWordLength: longestWordLength }, words);
 
   return wrapToTarget(words, target, opts);
