@@ -1,4 +1,8 @@
-To get started with this bootstrap replace `/__PROJECT.*/` in project and delete this line.
+To get started with this bootstrap:
+1. Replace `/__PROJECT.*/` in project.
+1. Look for other `___` cases.
+1. Create a GH repo, and set the description, link, and pages settings.
+1. Delete this section.
 
 # __PROJECT_NAME__
 
