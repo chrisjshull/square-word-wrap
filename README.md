@@ -16,7 +16,7 @@
 
 `npm install wrap-words`
 
-A word wrapping utility which correctly handles graphemes and ANSI escape codes.
+A word wrapping utility which correctly handles [graphemes](https://github.com/orling/grapheme-splitter) and [ANSI escape codes](https://github.com/chalk/chalk).
 
 `wrap-words` is a little different from other word wrapping utilities in that it treats all passed in whitespace as collapsible (like HTML). This means is can also be used to re-wrap a string that had previously been wrapped.
 
