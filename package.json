@@ -1,7 +1,7 @@
 {
   "name": "wrap-words",
   "version": "0.0.6",
-  "description": "Word wrap.",
+  "description": "A word wrapping utility which correctly handles graphemes and ANSI escape codes.",
   "main": "dist/",
   "scripts": {
     "build": "npm run build:docs && npm run build:babel && npm run build:browser",

@@ -14,12 +14,11 @@
 [![Version](https://img.shields.io/npm/v/wrap-words.svg?label=version)](https://www.npmjs.org/package/wrap-words)
 [![Try on RunKit](https://badge.runkitcdn.com/wrap-words.svg)](https://npm.runkit.com/wrap-words)
 
+`npm install wrap-words`
 
-Word wrap.
+A word wrapping utility which correctly handles graphemes and ANSI escape codes.
 
-
-`npm install --save wrap-words`
-
+`wrap-words` is a little different from other word wrapping utilities in that it treats all passed in whitespace as collapsible (like HTML). This means is can also be used to re-wrap a string that had previously been wrapped.
 
 [Live Example](docs/index.html)
 

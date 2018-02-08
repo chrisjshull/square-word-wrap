@@ -1,5 +1,5 @@
 {
-  "plugins": ["node_modules/jsdoc-escape-at"],
+  "plugins": ["node_modules/jsdoc-escape-at", "plugins/markdown"],
   "recurseDepth": 10,
   "source": {
     "includePattern": "src/.*\\.js$",

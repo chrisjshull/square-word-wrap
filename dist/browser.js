@@ -28,15 +28,13 @@ var _ansiRegex2 = _interopRequireDefault(_ansiRegex);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /**
-                                                                                                                                                                                                     * Base module for __PROJECT_NAME__.
-                                                                                                                                                                                                     * ________________________________.
+                                                                                                                                                                                                     * Base module for wrap-words.
                                                                                                                                                                                                      * @module index
                                                                                                                                                                                                      * @example
-                                                                                                                                                                                                     * import ________ from '__PROJECT_NAME__';
-                                                                                                                                                                                                     * ________
+                                                                                                                                                                                                     * import {wrap} from 'wrap-words';
+                                                                                                                                                                                                     * console.log(wrap('hello world '.repeat(100)));
                                                                                                                                                                                                      */
 
-// future: grok terminal color escapes like https://github.com/chalk/chalk, https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
 // future: grok hyphens, inc. soft hyphens
 // future: assume or allow passing or size of tabs
 // future: support preserving existing whitespace chars without forcing them to be spaces inc. what to do with leading and repeating whitespace
@@ -45,13 +43,10 @@ var splitter = new _graphemeSplitter2.default();
 
 var DEBUG = false;
 
-/**
- * ________
- */
-function parseWords(str) {
+function parseWords(text) {
   var longestWordLength = 0;
   var charCount = 0;
-  var words = str.split(/[\t\n\r ]+/).map(function (wordTxt) {
+  var words = text.split(/[\t\n\r ]+/).map(function (wordTxt) {
     // collapsible whitespace, like HTML/CSS
     var word = [];
 
@@ -134,17 +129,34 @@ function wrapToTarget(words, target) {
   return output.join(opts.lineDelimeter || '\n');
 }
 
-function wrap(str, opts) {
-  var _parseWords = parseWords(str),
+/**
+ * Wrap a string so that it has `opts.width` characters max line length.
+ * (Unless a given word is longer than `opts.width`).
+ *
+ * @param {String} text
+ * @param {Number} [opts.width=80]
+ * @param {String} [opts.lineDelimeter="\n"]
+ * @returns {String}
+ */
+function wrap(text, opts) {
+  var _parseWords = parseWords(text),
       words = _parseWords.words;
 
   return wrapToTarget(words, opts && opts.width || 80, opts);
 }
 
-function square(str) {
+/**
+ * Wrap a string such that the resulting text should be of approximately the same width and height.
+ *
+ * @param {String} text
+ * @param {Number} [opts.widthMultiplier=2] Make each row this much longer to account for characters being taller than they are wide.
+ * @param {String} [opts.lineDelimeter="\n"]
+ * @returns {String}
+ */
+function square(text) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  var _parseWords2 = parseWords(str),
+  var _parseWords2 = parseWords(text),
       words = _parseWords2.words,
       charCount = _parseWords2.charCount,
       longestWordLength = _parseWords2.longestWordLength;
@@ -155,15 +167,19 @@ function square(str) {
   target *= opts.widthMultiplier || 2;
 
   /* istanbul ignore next */
-  DEBUG && console.log({ str: str, target: target, charCount: charCount, longestWordLength: longestWordLength }, words);
+  DEBUG && console.log({ text: text, target: target, charCount: charCount, longestWordLength: longestWordLength }, words);
 
   return wrapToTarget(words, target, opts);
 }
 
-function unwrap(str) {
-  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-  var _parseWords3 = parseWords(str),
+/**
+ * Removes newlines (and other whitespace), collapsing to a single space.
+ *
+ * @param {String} text
+ * @returns {String}
+ */
+function unwrap(text) {
+  var _parseWords3 = parseWords(text),
       words = _parseWords3.words;
 
   return words.map(function (word) {

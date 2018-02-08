@@ -27,15 +27,13 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Base module for __PROJECT_NAME__.
- * ________________________________.
+ * Base module for wrap-words.
  * @module index
  * @example
- * import ________ from '__PROJECT_NAME__';
- * ________
+ * import {wrap} from 'wrap-words';
+ * console.log(wrap('hello world '.repeat(100)));
  */
 
-// future: grok terminal color escapes like https://github.com/chalk/chalk, https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
 // future: grok hyphens, inc. soft hyphens
 // future: assume or allow passing or size of tabs
 // future: support preserving existing whitespace chars without forcing them to be spaces inc. what to do with leading and repeating whitespace
@@ -47,13 +45,10 @@ const splitter = new GraphemeSplitter();
 
 const DEBUG = false;
 
-/**
- * ________
- */
-function parseWords(str) {
+function parseWords(text) {
   let longestWordLength = 0;
   let charCount = 0;
-  const words = str.split(/[\t\n\r ]+/).map(wordTxt => { // collapsible whitespace, like HTML/CSS
+  const words = text.split(/[\t\n\r ]+/).map(wordTxt => { // collapsible whitespace, like HTML/CSS
     const word = [];
 
     const re = ansiRegex();
@@ -131,13 +126,30 @@ function wrapToTarget(words, target, opts = {}) {
   return output.join(opts.lineDelimeter || '\n');
 }
 
-export function wrap(str, opts) {
-  const {words} = parseWords(str);
+/**
+ * Wrap a string so that it has `opts.width` characters max line length.
+ * (Unless a given word is longer than `opts.width`).
+ *
+ * @param {String} text
+ * @param {Number} [opts.width=80]
+ * @param {String} [opts.lineDelimeter="\n"]
+ * @returns {String}
+ */
+export function wrap(text, opts) {
+  const {words} = parseWords(text);
   return wrapToTarget(words, (opts &amp;&amp; opts.width) || 80, opts);
 }
 
-export function square(str, opts = {}) {
-  const {words, charCount, longestWordLength} = parseWords(str);
+/**
+ * Wrap a string such that the resulting text should be of approximately the same width and height.
+ *
+ * @param {String} text
+ * @param {Number} [opts.widthMultiplier=2] Make each row this much longer to account for characters being taller than they are wide.
+ * @param {String} [opts.lineDelimeter="\n"]
+ * @returns {String}
+ */
+export function square(text, opts = {}) {
+  const {words, charCount, longestWordLength} = parseWords(text);
 
   let target = Math.max(
     opts.longWordForcesRect ? longestWordLength : 0,
@@ -147,13 +159,19 @@ export function square(str, opts = {}) {
   target *= opts.widthMultiplier || 2;
 
   /* istanbul ignore next */
-  DEBUG &amp;&amp; console.log({str, target, charCount, longestWordLength}, words);
+  DEBUG &amp;&amp; console.log({text, target, charCount, longestWordLength}, words);
 
   return wrapToTarget(words, target, opts);
 }
 
-export function unwrap(str, opts = {}) {
-  const {words} = parseWords(str);
+/**
+ * Removes newlines (and other whitespace), collapsing to a single space.
+ *
+ * @param {String} text
+ * @returns {String}
+ */
+export function unwrap(text) {
+  const {words} = parseWords(text);
 
   return words.map(word => word.join('')).join(' ');
 }
