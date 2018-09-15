@@ -20,6 +20,6 @@ A word wrapping utility which correctly handles [graphemes](https://github.com/o
 
 `wrap-words` is a little different from other word wrapping utilities in that it treats all passed in whitespace as collapsible (like HTML). This means is can also be used to re-wrap a string that had previously been wrapped.
 
-[Live Example](docs/index.html)
+[Live Example](https://chrisjshull.github.io/wrap-words/docs/)
 
 [API Docs](docs/api/)
